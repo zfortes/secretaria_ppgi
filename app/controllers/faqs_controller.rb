@@ -1,7 +1,7 @@
 class FaqsController < ApplicationController
   before_action :set_faq, only: [:show, :edit, :update, :destroy]
   before_action :must_be_admin, only:  [ :destroy, :index, :accept]
-  #before_action :must_be_authenticated_user, only:  [:show]
+  before_action :must_be_authenticated_user, only:  [:show]
   
   def index
     @faqs = Faq.all
@@ -66,16 +66,16 @@ class FaqsController < ApplicationController
     def faq_params
       params.require(:faq).permit(:question, :answer, :topic_id)
     end
-end
-
-def must_be_admin
+    def must_be_admin
       unless current_user && current_user.role == "administrator"
         redirect_to faqs_url, alert: "Essa função é restrita a administradores"
       end
     end
 
-def must_be_authenticated_user
+    def must_be_authenticated_user
       unless current_user && current_user.role != "administrator"
         redirect_to faqs_url, alert: "Essa função é restrita a usuários cadastrados e logged-in não administradores"
       end
     end
+  end
+
